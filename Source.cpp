@@ -36,51 +36,83 @@ void textMenu() {
 	cout << "13. Закрыть эту программу \n";
 }
 
+struct Shopper* createArr(struct Shopper* arr, int& count_el) {
+	cout << "Введите количество: ";
+	cin >> count_el;
+	arr = new Shopper[count_el];
+	return arr;
+}
+//Инициализация или замена данных по номеру в существующем массиве
+void inputOnItemByIndex(struct Shopper* arr, int i) {
+	cout << "Введите имя : ";
+	cin >> arr[i].name;
+	//cout << "Введите фамилию : ";
+	//cin>> arr[i].family;
+	//cout << "Введите отчество : ";
+	//cin >>  arr[i].patronymic;
+	//cout << "Введите адрес : ";
+	//cin >> arr[i].adress;
+	//cout << "Введите телефон: ";
+	//cin >> arr[i].telephone;
+	//cout << "Номер кредтной карты : ";
+	//cin >> arr[i].creditka;
+}
+
 struct Shopper* inputToArrStruct(struct Shopper* arr, int & count_el) {
 	
-	cout << "";
+	//arr = createArr(arr, count_el);
+	cout << "Введите количество: ";
 	cin >> count_el;
-
-	arr =  new Shopper[count_el];
+	arr = new Shopper[count_el];
 
 	for (int i = 0; i < count_el; i++) {
-		cout << "Введите имя : ";
-		cin>> arr[i].name;
-		//cout << "Введите фамилию : ";
-		//cin>> arr[i].family;
-		//cout << "Введите отчество : ";
-		//cin >>  arr[i].patronymic;
-		//cout << "Введите адрес : ";
-		//cin >> arr[i].adress;
-		//cout << "Введите телефон: ";
-		//cin >> arr[i].telephone;
-		//cout << "Номер кредтной карты : ";
-		//cin >> arr[i].creditka;
+		inputOnItemByIndex(arr, i);
 	}
 
 	return arr;
 }
 
+
+
 void initDataFromFile(struct Shopper* arr, int& count_el) {
 	fstream f;
 	string str;
 	f.open("data.txt", ios::in);
-	int i = 0; // счетчик по массиву
 	if (f)
 	{
-		while (getline(f, str)){ // построчное считывание из файла
-			// Аналогично для всех полей ( можно вынести в switch в отдельную функцию)
-			string str_new = str;
-			if (i == 0) {
-				arr[i].name = str_new;
+		for (int i = 0; i < count_el; i++) { // номер заполняемой структуры по счету
+			for (int k = 0; k < 1; k++) { // поменять на количество строк в структуре
+				getline(f, str);
+				string str_new = str;
+				switch (k)
+				{
+				case 0:
+					arr[i].name = str;
+					break;
+				/*case 1: Верно!! Раскоментировать потом!!
+					arr[i].family = str;
+					break;
+				case 2:
+					arr[i].patronymic = str;
+					break;
+				case 3:
+					arr[i].adress = str;
+					break;
+				case 4:
+					arr[i].telephone = str;
+					break;
+				case 5:
+					arr[i].creditka = str;
+					break;*/
+				default:
+					cout << "Произошла ошибка";
+					break;
+				}
 			}
-
-			
-			// добавить if на зануление i if i> 5 или 6
-			i++;
-			f.close(); // удалить это для 1 запуска
-
 		}
+
+
+
 		f.close();
 	}
 	else
@@ -100,7 +132,7 @@ int getCountElementInFile() {
 	{
 		while (getline(f, str)) { // построчное считывание из файла
 			i++;
-			if (i == 5) {
+			if (i == 1) {  // здесь должно быть 5
 				count++;
 				i = 0;
 			}
@@ -146,11 +178,124 @@ void save( struct Shopper* arr, int count) {
 
 }
 
+// копирование данных из одной структуры в другую, по номерам структур
 
+void copyDataStructsByItem(struct Shopper* prev, int posPrev , struct Shopper* current, int posCurrent) {
+	
+	current[posCurrent].name = prev[posPrev].name;
+	/*current[i].family = prev[i].family; Доделать на правильные поля
+	current[i].name = prev[i].name;
+	current[i].name = prev[i].name;
+	current[i].name = prev[i].name;
+	current[i].name = prev[i].name;*/
+	
+
+}
+
+// копирование данных из одной струкруты в другую
+/*
+void copyDataStructs(struct Shopper* prev, int countPrev,  struct Shopper* current) {
+	for (int i = 0; i < countPrev; i++) {
+		copyDataStructsByItem(prev, current, i);
+	}
+
+}
+
+*/
+
+// добавление в i-тую позицию в существующий массив
+Shopper* addInItem(struct Shopper* arr, int& count_el) {
+
+	int newCountEl = 0;
+	int position = 0;
+	cout << "Введите позицию: ";
+	cin >> position;
+	count_el += 1; // изменяем количество, т.е увеличиваем на 1
+	Shopper* arrNew = new Shopper[count_el]; // новый массив с учетом новых покупателей
+	for (int i = 0; i < count_el - 1; i++) {
+		// если не дошли еще до новых покупателей, то копируем старых
+		if (i < position) { //
+			copyDataStructsByItem(arr, i, arrNew, i);
+		}
+		// иначе заставляем инициализировать их новыми данными
+		else {
+			if (i == position) { // ПОМЕНЯТЬ на чисто полей
+				inputOnItemByIndex(arrNew, position);
+			}
+			copyDataStructsByItem(arr, i , arrNew, i + 1);
+		}
+	}
+	
+
+	cout << "Данные добавлены в программу!";
+	system("pause");
+
+	return arrNew;
+
+}
+
+// Удаление из i-той позиции в существующий массив
+Shopper* deleteInItem(struct Shopper* arr, int& count_el) {
+
+	int newCountEl = 0;
+	int position = 0;
+	cout << "Введите позицию: ";
+	cin >> position;
+	count_el -= 1; // изменяем количество, т.е уменьшаем на 1
+	Shopper* arrNew = new Shopper[count_el]; // новый массив с учетом новых покупателей
+	for (int i = 0; i < count_el ; i++) {
+		// если не дошли еще до новых покупателей, то копируем старых
+		if (i < position) { //
+			copyDataStructsByItem(arr, i, arrNew, i);
+		}
+		// иначе заставляем инициализировать их новыми данными
+		else {
+			copyDataStructsByItem(arr, i + 1, arrNew, i);
+		}
+	}
+	
+
+	cout << "Данные добавлены в программу!";
+	system("pause");
+
+	return arrNew;
+
+}
+
+
+// Добавление НОВЫХ данных в существующий массив
+Shopper* appendInExistArr(struct Shopper* arr, int & count_el) {
+	
+	int newCountEl = 0;
+	cout << "Введите количество новых покупателей: ";
+	cin >> newCountEl;
+	count_el += newCountEl; // изменяем количество, т.е прибавляем к текущим, число введенное пользователем
+	Shopper* arrNew = new Shopper[count_el]; // новый массив с учетом новых покупателей
+	for (int i = 0; i < count_el; i++) {
+		// если не дошли еще до новых покупателей, то копируем старых
+		if (i < count_el - newCountEl) { //  count_el - newCountEl =  количество эдементов в старом массиве
+			//copyDataStructs(arr, count_el - newCountEl, arrNew);
+			copyDataStructsByItem(arr, i, arrNew, i);
+		}
+		// иначе заставляем инициализировать их новыми данными
+		else {
+			inputOnItemByIndex(arrNew, i);
+		}
+	}
+
+
+	cout << "Данные добавлены в программу!";
+	system("pause");
+
+	return arrNew;
+
+}
 
 void menu() {
 	Shopper * arr = 0;
-	int count_el = 0;
+	int count_el = 0; // сколько выделено под массив
+	// сколько заполнено
+
 	while (true) {
 		int i = -1; // номер пункта меню
 		textMenu();
@@ -162,14 +307,16 @@ void menu() {
 			arr = inputToArrStruct(arr, count_el);
 			break;
 		case 2:
-			getArrFromFile(arr, count_el);
+			arr = getArrFromFile(arr, count_el);
 			break;
 		case 3:
 			save(arr, count_el);
 			break;
 		case 4:
+			arr = appendInExistArr(arr, count_el);
 			break;
 		case 5:
+			arr = addInItem(arr, count_el);
 			break;
 		case 6:
 			break;
@@ -180,10 +327,11 @@ void menu() {
 		case 9:
 			break;
 		case 10:
+			arr = deleteInItem(arr, count_el);
 			break;
 		case 11:
 			break;
-		case 12:
+		case 12:// сама могу написать
 			break;
 		case 13:
 			exit(0);
@@ -200,55 +348,6 @@ void menu() {
 }
 
 
-
-/*
-void form(char* filename[10], int Kol)
-{
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
-	int i;
-	char* rejim = "\0";
-	FILE* f;
-	shopper s;
-	if (Kol == 1) {
-		rejim = "a";
-	}
-	if ((f = fopen(sFileName, rejim)) == NULL) exit(1);
-	for (i = 0; i < Kol; i++) {
-		cout << "Введите Имя покупателя: ";
-		scanf("%s", &s.Name);
-		cout << "Введите адресс: ";
-		scanf("%s", &s.adress);
-		cout << "Введите номер телефона: ";
-		scanf("%s", &s.telephone);
-		cout << "Введите номер карты: ";
-		scanf("%s", &s.creditka);
-		cout << endl;
-		fwrite(&s, sizeof(shopper), 1, f);
-		if (ferror(f) != NULL) exit(2);
-	}
-	fclose(f);
-}
-void vivod(char sFileName[10])
-{
-	FILE* f;
-	shopper d;
-	if ((f = fopen(sFileName, "r")) == NULL) exit(3);
-	cout << "File - " << sFileName << endl;
-	while (!feof(f)) {
-		fread(&d, sizeof(shopper), 1, f);
-		if (!feof(f)) {
-			cout << "**************************\n";
-			cout << "Familia: " << d.name << endl;
-			cout << "Adress: " << d.0adress << endl;
-			cout << "Telephone: " << d.telephone << endl;
-			cout << "Nomer carti:" << d.creditka << endl;
-			cout << "**************************\n";
-		}
-	}
-	fclose(f);
-}
-*/
 
 int main(int argc, char* argv[])
 {
