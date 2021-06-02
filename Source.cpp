@@ -291,6 +291,25 @@ Shopper* appendInExistArr(struct Shopper* arr, int & count_el) {
 
 }
 
+
+void structureInference(struct Shopper* arr, int& count_el) {
+
+	for (int i = 0; i < count_el; i++) {
+		cout << arr[i].name<< endl;
+		
+		//cout << arr[i].family << endl;// фамилия
+	
+		//cout << arr[i].patronymic << endl; // отчество
+		//
+		//cout << arr[i].adress << endl; // адрес
+	
+		//cout << arr[i].telephone << endl; // телефон
+	
+		//cout << arr[i].creditka << endl;// номер кредитной карты
+	}
+}
+
+
 void menu() {
 	Shopper * arr = 0;
 	int count_el = 0; // сколько выделено под массив
@@ -332,6 +351,7 @@ void menu() {
 		case 11:
 			break;
 		case 12:// сама могу написать
+			structureInference(arr, count_el);// компилятор всё затирае, почему?
 			break;
 		case 13:
 			exit(0);
