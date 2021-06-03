@@ -7,12 +7,13 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
+#include <list>
 
 using namespace std;
 struct Shopper
 {
-	string name;
 	string family;
+	string name;
 	string patronymic;
 	string adress;
 	string telephone;
@@ -44,18 +45,19 @@ struct Shopper* createArr(struct Shopper* arr, int& count_el) {
 }
 //Инициализация или замена данных по номеру в существующем массиве
 void inputOnItemByIndex(struct Shopper* arr, int i) {
-	cout << "Введите имя : ";
-	cin >> arr[i].name;
-	//cout << "Введите фамилию : ";
-	//cin>> arr[i].family;
-	//cout << "Введите отчество : ";
-	//cin >>  arr[i].patronymic;
-	//cout << "Введите адрес : ";
-	//cin >> arr[i].adress;
-	//cout << "Введите телефон: ";
-	//cin >> arr[i].telephone;
-	//cout << "Номер кредтной карты : ";
-	//cin >> arr[i].creditka;
+	
+	cout << "Введите фамилию : ";
+	cin>> arr[i].family;
+	//cout << "Введите имя : ";
+	/*cin >> arr[i].name;
+	cout << "Введите отчество : ";
+	cin >>  arr[i].patronymic;
+	cout << "Введите адрес : ";
+	cin >> arr[i].adress;
+	cout << "Введите телефон: ";
+	cin >> arr[i].telephone;
+	cout << "Номер кредтной карты : ";
+	cin >> arr[i].creditka;*/
 }
 
 struct Shopper* inputToArrStruct(struct Shopper* arr, int & count_el) {
@@ -87,10 +89,10 @@ void initDataFromFile(struct Shopper* arr, int& count_el) {
 				switch (k)
 				{
 				case 0:
-					arr[i].name = str;
+					arr[i].family = str;
 					break;
 				/*case 1: Верно!! Раскоментировать потом!!
-					arr[i].family = str;
+					arr[i].name = str;
 					break;
 				case 2:
 					arr[i].patronymic = str;
@@ -159,15 +161,15 @@ void save( struct Shopper* arr, int count) {
 	// добавить проверку на существование файла
 	ofstream filename("data.txt");
 	filename.close();
-	//
+	
 	f.open("data.txt");
 
 	for (int i = 0; i < count; i++)
 	{
 		//getline(cin, str);
-		f << arr[i].name << endl; // записали строку с именем в файл
+		f << arr[i].family << endl; // записали строку с именем в файл
 		/* ВЕРНО!
-		f << arr[i].family << endl; // фамилию
+		f << arr[i].name << endl; // фамилию
 		f << arr[i].patronymic << endl; // отчество
 		f << arr[i].adress << endl; // адрес
 		f << arr[i].telephone << endl; // телефон
@@ -184,10 +186,10 @@ void copyDataStructsByItem(struct Shopper* prev, int posPrev , struct Shopper* c
 	
 	current[posCurrent].name = prev[posPrev].name;
 	/*current[i].family = prev[i].family; Доделать на правильные поля
-	current[i].name = prev[i].name;
-	current[i].name = prev[i].name;
-	current[i].name = prev[i].name;
-	current[i].name = prev[i].name;*/
+	current[i].patronymic = prev[i].patronymic;
+	current[i].adress = prev[i].adress;
+	current[i].telephone = prev[i].telephone;
+	current[i].creditka = prev[i].creditka;*/
 	
 
 }
@@ -295,20 +297,178 @@ Shopper* appendInExistArr(struct Shopper* arr, int & count_el) {
 void structureInference(struct Shopper* arr, int& count_el) {
 
 	for (int i = 0; i < count_el; i++) {
-		cout << arr[i].name<< endl;
-		
-		//cout << arr[i].family << endl;// фамилия
-	
+		cout << arr[i].family<< endl;
+		//cout << arr[i].name << endl;// фамилия
 		//cout << arr[i].patronymic << endl; // отчество
-		//
 		//cout << arr[i].adress << endl; // адрес
-	
 		//cout << arr[i].telephone << endl; // телефон
-	
 		//cout << arr[i].creditka << endl;// номер кредитной карты
 	}
+	system("pause");
 }
 
+
+list<int> getArrList(struct Shopper* arr, int count_el, list<int> Arr, string val) {
+	
+	for (int i = 0; i < count_el; i++) {
+		//if (arr[0].family == arr[i].family) {
+		if (strcmp(val.c_str(), arr[i].family.c_str()) == 0) {
+			Arr.push_back(i);
+		}
+	}
+
+	return Arr;
+}
+
+
+
+// 11 задание ДИМЕ ПОКАЗАТЬ
+Shopper* deleteFirstField(struct Shopper* arr, int& count_el) {
+	string val;
+	cout << "Введите значение поля: ";
+	cin >> val;
+
+	list<int> indexArr;
+	indexArr = getArrList(arr, count_el, indexArr, val); // посчитали количество структур, которое необходимо удалить
+	
+	Shopper* arrNew = new Shopper[count_el - indexArr.size()]; // новый массив с учетом новых покупателей
+	
+	int indexStart = 0;
+	int it = count_el - indexArr.size();
+	auto iter = indexArr.begin();
+
+	while (it != 0) {
+		if (iter == indexArr.begin()) {
+			for (int i = 0; i < *iter; i++) {
+				copyDataStructsByItem(arr, i, arrNew, i);
+				it--;
+			}
+		}
+		else {
+			int i = indexStart + 1;
+			int vaIter = *iter;
+			for (int i = indexStart + 1; i < *iter - 1; i++) {
+				copyDataStructsByItem(arr, i, arrNew, i);
+				it--;
+			}
+		}
+		indexStart = *iter;
+		if (iter != indexArr.end()) {
+			iter++;
+		}
+		else {
+			*iter = 1;
+		}
+		
+	}
+
+	/*for (auto iter = indexArr.begin(); iter != indexArr.end(); iter++)
+	{
+		if (iter == indexArr.begin()) {
+			for (int i = 0; i < *iter; i++) {
+				copyDataStructsByItem(arr, i, arrNew, i);
+			}
+		}
+		else {
+			for (int i = indexStart + 1; i < *iter -1; i++) {
+				copyDataStructsByItem(arr, i, arrNew, i);
+			}
+		}
+		indexStart = *iter;		
+	}*/
+
+	return arrNew;
+
+}
+
+////задание 6
+//Shopper* sortingArray_of_StructuresFirst(struct Shopper* arr, int& count_el){
+//		for (int i = 0; i < count_el - 1; i++) {
+//			int min = i;
+//			for (int j = i + 1; j < count_el; j++) {
+//				if (arr[j].family < arr[min].family)
+//					min = j;
+//			}
+//			if (min != i) {
+//				string t = arr[min].family;
+//				arr[min].family = arr[i].family;
+//				arr[i].family = t;
+//			}
+//		}
+//}
+
+//заадние 7
+//Shopper* sortingArray_of_Structures(struct Shopper* arr, int& count_el){
+//		for (int i = 0; i < count_el - 1; i++) {
+//			int min = i;
+//			for (int j = i + 1; j < count_el; j++) {
+//				if (arr[j].family < arr[min].family)
+//					min = j;
+//			}
+//			if (min = i) {
+//				sortingArray_of_Structures_Name(arr, count_el);
+//			}
+//			else {
+//				string t = arr[min].family;
+//				arr[min].family = arr[i].family;
+//				arr[i].family = t;
+//				sortingArray_of_Structures_Name(arr, count_el);
+//			}
+//		}
+//	}
+//
+//	Shopper* sortingArray_of_Structures_Name(struct Shopper* arr, int& count_el){
+//		for (int i = 0; i < count_el - 1; i++) {
+//			int min = i;
+//			for (int j = i + 1; j < count_el; j++) {
+//				if (arr[j].name < arr[min].name)
+//					min = j;
+//			}
+//			if (min = i) {
+//				sortingArray_of_Structures_Patronymic(arr, count_el);
+//			}
+//			else {
+//				string t = arr[min].family;
+//				arr[min].family = arr[i].family;
+//				arr[i].family = t;
+//				t = arr[min].name;
+//				arr[min].name = arr[i].name;
+//				arr[i].name = t;
+//				sortingArray_of_Structures_Patronymic(arr, count_el);
+//			}
+//		}
+//	}
+//
+//	Shopper* sortingArray_of_Structures_Patronymic(struct Shopper* arr, int& count_el) {
+//		for (int i = 0; i < count_el - 1; i++) {
+//			int min = i;
+//			for (int j = i + 1; j < count_el; j++) {
+//				if (arr[j].patronymic < arr[min].patronymic)
+//					min = j;
+//			}
+//			if (min != i) {
+//				string t = arr[min].family;
+//				arr[min].family = arr[i].family;
+//				arr[i].family = t;
+//				t = arr[min].name;
+//				arr[min].name = arr[i].name;
+//				arr[i].name = t;
+//				t = arr[min].patronymic;
+//				arr[min].patronymic = arr[i].name;
+//				arr[i].patronymic = t;
+//			}
+//		}
+//	}
+
+
+//// 8 задание
+//	Shopper* deleteInItem(struct Shopper* arr, int& count_el) {
+//
+//
+//		cout << "Введите параметр: ";
+//		
+//		
+//	}
 
 void menu() {
 	Shopper * arr = 0;
@@ -338,8 +498,10 @@ void menu() {
 			arr = addInItem(arr, count_el);
 			break;
 		case 6:
+			//arr = sortingArray_of_StructuresFirst(arr, count_el);
 			break;
 		case 7:
+
 			break;
 		case 8:
 			break;
@@ -349,6 +511,7 @@ void menu() {
 			arr = deleteInItem(arr, count_el);
 			break;
 		case 11:
+			arr = deleteFirstField(arr, count_el);// ДИМЕ ПОКАЗАТЬ
 			break;
 		case 12:// сама могу написать
 			structureInference(arr, count_el);// компилятор всё затирае, почему?
