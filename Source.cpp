@@ -184,7 +184,7 @@ void save( struct Shopper* arr, int count) {
 
 void copyDataStructsByItem(struct Shopper* prev, int posPrev , struct Shopper* current, int posCurrent) {
 	
-	current[posCurrent].name = prev[posPrev].name;
+	current[posCurrent].family = prev[posPrev].family;
 	/*current[i].family = prev[i].family; Доделать на правильные поля
 	current[i].patronymic = prev[i].patronymic;
 	current[i].adress = prev[i].adress;
@@ -328,74 +328,52 @@ Shopper* deleteFirstField(struct Shopper* arr, int& count_el) {
 	cout << "Введите значение поля: ";
 	cin >> val;
 
-	list<int> indexArr;
-	indexArr = getArrList(arr, count_el, indexArr, val); // посчитали количество структур, которое необходимо удалить
-	
-	Shopper* arrNew = new Shopper[count_el - indexArr.size()]; // новый массив с учетом новых покупателей
-	
-	int indexStart = 0;
-	int it = count_el - indexArr.size();
-	auto iter = indexArr.begin();
 
-	while (it != 0) {
-		if (iter == indexArr.begin()) {
-			for (int i = 0; i < *iter; i++) {
-				copyDataStructsByItem(arr, i, arrNew, i);
-				it--;
-			}
+	// стало
+	int count = 0;
+	for (int i = 0; i < count_el; i++) {
+		//if (arr[0].family == arr[i].family) {
+		if (strcmp(val.c_str(), arr[i].family.c_str()) == 0) {
+			count++;
 		}
-		else {
-			int i = indexStart + 1;
-			int vaIter = *iter;
-			for (int i = indexStart + 1; i < *iter - 1; i++) {
-				copyDataStructsByItem(arr, i, arrNew, i);
-				it--;
-			}
-		}
-		indexStart = *iter;
-		if (iter != indexArr.end()) {
-			iter++;
-		}
-		else {
-			*iter = 1;
-		}
-		
 	}
 
-	/*for (auto iter = indexArr.begin(); iter != indexArr.end(); iter++)
-	{
-		if (iter == indexArr.begin()) {
-			for (int i = 0; i < *iter; i++) {
-				copyDataStructsByItem(arr, i, arrNew, i);
-			}
-		}
-		else {
-			for (int i = indexStart + 1; i < *iter -1; i++) {
-				copyDataStructsByItem(arr, i, arrNew, i);
-			}
-		}
-		indexStart = *iter;		
-	}*/
+	Shopper* arrNew = new Shopper[count_el - count]; // новый массив с учетом новых покупателей
+	int countArrNew = 0;
 
+	for (int i = 0; i < count_el; i++) {
+		if (strcmp(val.c_str(), arr[i].family.c_str()) != 0) {
+			copyDataStructsByItem(arr, i, arrNew, countArrNew);\
+			countArrNew++;
+		}	
+	}
+	count_el -= count;
 	return arrNew;
 
 }
 
-////задание 6
-//Shopper* sortingArray_of_StructuresFirst(struct Shopper* arr, int& count_el){
-//		for (int i = 0; i < count_el - 1; i++) {
-//			int min = i;
-//			for (int j = i + 1; j < count_el; j++) {
-//				if (arr[j].family < arr[min].family)
-//					min = j;
-//			}
-//			if (min != i) {
-//				string t = arr[min].family;
-//				arr[min].family = arr[i].family;
-//				arr[i].family = t;
-//			}
-//		}
-//}
+//задание 6
+void sortingArray_of_StructuresFirst(struct Shopper* arr, int count_el){
+	Shopper* tmp = new Shopper[1];
+		for (int i = 0; i < count_el - 1; i++) {
+			int min = i;
+			for (int j = i + 1; j < count_el; j++) {
+				if (arr[j].family < arr[min].family)
+
+					min = j;
+			}
+			if (min != i) {
+				/*tmp = min
+				min = i
+				a = t*/
+				copyDataStructsByItem(arr, min, tmp, 0);
+				copyDataStructsByItem(arr, i, arr, min);
+				copyDataStructsByItem(tmp, 0, arr, i);
+			}
+		}
+}
+
+
 
 //заадние 7
 //Shopper* sortingArray_of_Structures(struct Shopper* arr, int& count_el){
@@ -498,7 +476,7 @@ void menu() {
 			arr = addInItem(arr, count_el);
 			break;
 		case 6:
-			//arr = sortingArray_of_StructuresFirst(arr, count_el);
+			sortingArray_of_StructuresFirst(arr, count_el);
 			break;
 		case 7:
 
