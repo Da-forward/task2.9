@@ -374,7 +374,86 @@ void sortingArray_of_StructuresFirst(struct Shopper* arr, int count_el){
 }
 
 
+//7 задание
+void sortingArray_of_StructuresFirst(struct Shopper* arr, int count_el, string str) {
+	Shopper* tmp = new Shopper[1];
+	for (int i = 0; i < count_el - 1; i++) {
+		int min = i;
+		for (int j = i + 1; j < count_el; j++) {
+			if (arr[j].family < arr[min].family)
 
+				min = j;
+		}
+		if (min != i) {
+			/*tmp = min
+			min = i
+			a = t*/
+			copyDataStructsByItem(arr, min, tmp, 0);
+			copyDataStructsByItem(arr, i, arr, min);
+			copyDataStructsByItem(tmp, 0, arr, i);
+		}
+	}
+
+	for (int i = 0; i < count_el - 1; i++) {
+		for (int j = i + 1; j < count_el; j++) {
+			if (strcmp(arr[i].family.c_str(), arr[j].family.c_str()) == 0) {
+				sortingArray_of_StructuresName(arr, count_el, str);
+			}
+
+		}
+	}
+
+	for (int i = 0; i < count_el - 1; i++) {
+		for (int j = i + 1; j < count_el; j++) {
+			if (strcmp(arr[i].name.c_str(), arr[j].name.c_str()) == 0) {
+				sortingArray_of_StructuresPatronymic(arr, count_el, str);
+			}
+
+		}
+	}
+
+
+}
+
+void sortingArray_of_StructuresName(struct Shopper* arr, int count_el, string str) {
+	Shopper* tmp = new Shopper[1];
+	for (int i = 0; i < count_el - 1; i++) {
+		int min = i;
+		for (int j = i + 1; j < count_el; j++) {
+			if (arr[j].name < arr[min].name)
+
+				min = j;
+		}
+		if (min != i) {
+			/*tmp = min
+			min = i
+			a = t*/
+			copyDataStructsByItem(arr, min, tmp, 0);
+			copyDataStructsByItem(arr, i, arr, min);
+			copyDataStructsByItem(tmp, 0, arr, i);
+		}
+	}
+}
+
+	void sortingArray_of_StructuresPatronymic(struct Shopper* arr, int count_el, string str) {
+		Shopper* tmp = new Shopper[1];
+		for (int i = 0; i < count_el - 1; i++) {
+			int min = i;
+			for (int j = i + 1; j < count_el; j++) {
+				if (arr[j].patronymic < arr[min].patronymic)
+
+					min = j;
+			}
+			if (min != i) {
+				/*tmp = min
+				min = i
+				a = t*/
+				copyDataStructsByItem(arr, min, tmp, 0);
+				copyDataStructsByItem(arr, i, arr, min);
+				copyDataStructsByItem(tmp, 0, arr, i);
+			}
+		}
+	}
 //заадние 7
 //Shopper* sortingArray_of_Structures(struct Shopper* arr, int& count_el){
 //		for (int i = 0; i < count_el - 1; i++) {
