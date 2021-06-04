@@ -375,7 +375,8 @@ void sortingArray_of_StructuresFirst(struct Shopper* arr, int count_el){
 
 
 //7 задание
-void sortingArray_of_StructuresFirst(struct Shopper* arr, int count_el, string str) {
+void sortingArray_of_Structures3(struct Shopper* arr, int count_el) {
+	string str;
 	Shopper* tmp = new Shopper[1];
 	for (int i = 0; i < count_el - 1; i++) {
 		int min = i;
@@ -558,7 +559,7 @@ void menu() {
 			sortingArray_of_StructuresFirst(arr, count_el);
 			break;
 		case 7:
-
+			sortingArray_of_Structures3(arr, count_el);
 			break;
 		case 8:
 			break;
